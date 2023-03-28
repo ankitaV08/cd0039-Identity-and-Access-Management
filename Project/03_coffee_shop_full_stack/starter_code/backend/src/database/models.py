@@ -18,8 +18,9 @@ setup_db(app)
 def setup_db(app):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    db.app = app
-    db.init_app(app)
+    with app.app_context():
+        db.app = app
+        db.init_app(app)
 
 
 '''
@@ -30,9 +31,12 @@ db_drop_and_create_all()
 '''
 
 
-def db_drop_and_create_all():
-    db.drop_all()
-    db.create_all()
+def db_drop_and_create_all(app):
+    # db.drop_all()
+    # db.create_all()
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
     # add one demo row which is helping in POSTMAN test
     drink = Drink(
         title='water',
